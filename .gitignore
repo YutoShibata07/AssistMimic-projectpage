@@ -1,0 +1,10 @@
+.DS_Store
+*.jpeg
+*.zip
+AssistMimic_CVPR2026/
+assistmimic-video.mov
+assistmimic-video-compressed.mov
+.playwright-mcp/
+static/images/thumbs/
+static/gifs/
+static/videos/demo.mov

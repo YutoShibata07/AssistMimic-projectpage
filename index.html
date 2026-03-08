@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssistMimic: Learning to Assist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="venue-badge">CVPR 2026</div>
+            <h1 class="title">
+                <span class="model-name">AssistMimic</span>: Learning to Assist
+            </h1>
+            <h2 class="subtitle">Physics-Grounded Human-Human Control via Multi-Agent Reinforcement Learning</h2>
+
+            <!-- Authors -->
+            <div class="authors">
+                <span class="author"><a href="https://yutoshibata07.github.io/YutoShibata/" target="_blank">Yuto Shibata</a><sup>1,2,3</sup></span>
+                <span class="author"><a href="https://kashu7100.github.io/" target="_blank">Kashu Yamazaki</a><sup>1</sup></span>
+                <span class="author"><a href="https://lalit-jayanti.github.io/" target="_blank">Lalit Jayanti</a><sup>1</sup></span>
+                <span class="author"><a href="https://aoki-medialab.jp/aokiyoshimitsu-en/" target="_blank">Yoshimitsu Aoki</a><sup>2,3</sup></span>
+                <span class="author"><a href="https://marikoisogawa.github.io/" target="_blank">Mariko Isogawa</a><sup>2,3</sup></span>
+                <span class="author"><a href="https://www.cs.cmu.edu/~katef/" target="_blank">Katerina Fragkiadaki</a><sup>1</sup></span>
+            </div>
+
+            <!-- Affiliations -->
+            <div class="affiliations">
+                <span class="affiliation"><sup>1</sup>Carnegie Mellon University</span>
+                <span class="affiliation"><sup>2</sup>Keio AI Research Center</span>
+                <span class="affiliation"><sup>3</sup>Keio University</span>
+            </div>
+
+            <!-- Links -->
+            <div class="links">
+                <a href="#" class="btn"><i class="fas fa-file-pdf"></i> Paper</a>
+                <a href="#" class="btn"><i class="fas fa-archive"></i> arXiv</a>
+                <a href="#" class="btn"><i class="fab fa-github"></i> Code (Coming Soon)</a>
+                <a href="#video" class="btn btn-primary"><i class="fas fa-video"></i> Video</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Video Section -->
+    <section id="video" class="section video-section">
+        <div class="container">
+            <div class="video-wrapper">
+                <video controls autoplay muted loop playsinline>
+                    <source src="static/videos/demo.mp4" type="video/mp4">
+                    <source src="static/videos/demo.mov" type="video/quicktime">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- Teaser -->
+    <section class="section teaser-section">
+        <div class="container">
+            <img src="static/images/teaser.png" alt="AssistMimic Teaser" class="teaser-image">
+            <p class="caption">
+                <strong>AssistMimic</strong> proposes a multi-agent RL framework capable of learning robust Supporter and Recipient policies from noisy, close-proximity motion sequences. By leveraging single-person motion priors, a novel recipient-adaptive reference retargeting mechanism, and contact-promoting rewards, AssistMimic becomes the first physics-based controller to successfully track such complex, high-contact reference motions.
+            </p>
+        </div>
+    </section>
+
+    <!-- Abstract -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Abstract</h2>
+            <div class="abstract">
+                <p>
+                    Humanoid robotics has strong potential to transform daily service and caregiving applications. Although recent advances in general motion tracking within physics engines (GMT) have enabled virtual characters and humanoid robots to reproduce a broad range of human motions, these behaviors are primarily limited to contact-less social interactions or isolated movements. Assistive scenarios, by contrast, require continuous awareness of a human partner and rapid adaptation to their evolving posture and dynamics.
+                </p>
+                <p>
+                    In this paper, we formulate the imitation of closely interacting, force-exchanging human–human motion sequences as a <strong>multi-agent reinforcement learning problem</strong>. We jointly train partner-aware policies for both the supporter (assistant) agent and the recipient agent in a physics simulator to track assistive motion references. To make this problem tractable, we introduce a <strong>partner policies initialization scheme</strong> that transfers priors from single-human motion-tracking controllers, greatly improving exploration. We further propose <strong>dynamic reference retargeting</strong> and <strong>contact-promoting reward</strong>, which adapt the assistant's reference motion to the recipient's real-time pose and encourage physically meaningful support.
+                </p>
+                <p>
+                    We show that AssistMimic is the <strong>first method capable of successfully tracking assistive interaction motions</strong> on established benchmarks, demonstrating the benefits of a multi-agent RL formulation for physically grounded and socially aware humanoid control.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Method -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Method</h2>
+            <div class="method-content">
+                <img src="static/images/pipeline.png" alt="Method Overview" class="method-image">
+                <p class="caption">
+                    <strong>Overview of AssistMimic.</strong> We train tracking-based humanoid control policies for both the recipient and the supporter, optimizing them to imitate a paired reference motion sequence. Our architecture builds on the single-agent tracking framework of PHC, extending it with partner-aware state inputs and augmenting standard imitation rewards with recipient-aware reference retargeting and contact-incentivizing reward terms.
+                </p>
+
+                <div class="method-details">
+                    <div class="method-item">
+                        <h3><i class="fas fa-brain"></i> Multi-Agent RL Formulation</h3>
+                        <p>We model close-range assistance as a multi-agent MDP where both the supporter and recipient learn tracking policies jointly. This enables reactive and physically consistent coordination between agents.</p>
+                    </div>
+                    <div class="method-item">
+                        <h3><i class="fas fa-running"></i> Motion Prior Initialization</h3>
+                        <p>We initialize both policies using parameters from a pre-trained single-person tracking controller, allowing them to inherit locomotion skills before acquiring role-specific behaviors.</p>
+                    </div>
+                    <div class="method-item">
+                        <h3><i class="fas fa-crosshairs"></i> Dynamic Reference Retargeting</h3>
+                        <p>We continuously adjust the assistant's hand targets to preserve their intended relative position with respect to the recipient's body, enabling adaptive support.</p>
+                    </div>
+                    <div class="method-item">
+                        <h3><i class="fas fa-hand-holding"></i> Contact-Promoting Rewards</h3>
+                        <p>We introduce contact-incentivizing rewards when the recipient's body is in close proximity to the assistant's hands, prioritizing functional support over strict kinematic tracking.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Results</h2>
+
+            <!-- Why MARL -->
+            <div class="result-block">
+                <h3>Why Multi-Agent RL?</h3>
+                <img src="static/images/kinematic-replay.png" alt="Kinematic Replay Failure" class="result-image img-medium">
+                <p class="caption">
+                    <strong>Failure of Kinematic Baselines.</strong> The kinematic replay approach results in the recipient "standing up" independently regardless of support (left), or causes severe interpenetration triggering massive restorative forces (right). These failures confirm that a kinematic-replay paradigm is fundamentally inapplicable for assistive tasks.
+                </p>
+            </div>
+
+            <!-- Quantitative Results -->
+            <div class="result-block">
+                <h3>Quantitative Evaluation</h3>
+                <div class="table-wrapper">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Method</th>
+                                <th colspan="2">Seen Dynamics</th>
+                                <th colspan="2">Unseen Dynamics</th>
+                            </tr>
+                            <tr>
+                                <th>SR (%)</th>
+                                <th>MPJPE (mm)</th>
+                                <th>Mass ×1.2</th>
+                                <th>K<sub>p</sub>/K<sub>d</sub> ×0.5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sequential Training</td>
+                                <td>62.4</td>
+                                <td>92.3</td>
+                                <td>49.9</td>
+                                <td>50.5</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td><strong>AssistMimic (Ours)</strong></td>
+                                <td><strong>74.9</strong></td>
+                                <td>113</td>
+                                <td>57.9</td>
+                                <td>72.8</td>
+                            </tr>
+                            <tr>
+                                <td>(-) Dynamic Retargeting</td>
+                                <td>83.4</td>
+                                <td>107</td>
+                                <td><strong>73.1</strong></td>
+                                <td><strong>83.3</strong></td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;&nbsp;(-) Contact Reward</td>
+                                <td>81.6</td>
+                                <td>80.4</td>
+                                <td>66.3</td>
+                                <td>77.1</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;(-) Weight Init</td>
+                                <td>0.0</td>
+                                <td>248</td>
+                                <td>0.0</td>
+                                <td>0.0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="caption">Evaluation of specialist policies on the <strong>Inter-X</strong> dataset.</p>
+            </div>
+
+            <!-- Qualitative Results Inter-X -->
+            <div class="result-block">
+                <h3>Qualitative Results on Inter-X</h3>
+                <img src="static/images/inter-x-qualitative.png" alt="Inter-X Qualitative Results" class="result-image img-wide">
+                <p class="caption">
+                    AssistMimic successfully tracks diverse assistive interactions including supporting from the front, back, or side; using both hands or a single hand; and assisting by grasping the arm or holding around the shoulder.
+                </p>
+            </div>
+
+            <!-- Qualitative Results HHI-Assist -->
+            <div class="result-block">
+                <h3>Qualitative Results on HHI-Assist</h3>
+                <img src="static/images/hhi-assist-qualitative.png" alt="HHI-Assist Qualitative Results" class="result-image img-wide">
+                <p class="caption">
+                    Qualitative evaluation on HHI-Assist dataset. The red boxes highlight whether the supporter's hands correctly adjust to the recipient's position and provide appropriate support.
+                </p>
+            </div>
+
+            <!-- Generated Motions -->
+            <div class="result-block">
+                <h3>Tracking Generated Interactions</h3>
+                <img src="static/images/generated-qualitative.png" alt="Generated Motion Tracking" class="result-image img-wide">
+                <p class="caption">
+                    AssistMimic successfully converts dense interaction kinematics generated by a motion diffusion model into physically plausible motions, demonstrating its generality and broad applicability.
+                </p>
+            </div>
+
+            <!-- Generalization -->
+            <div class="result-block">
+                <h3>Generalization to Unseen Actions</h3>
+                <img src="static/images/support-by-arm.png" alt="Generalization Results" class="result-image img-small">
+                <p class="caption">
+                    AssistMimic generalizes to unseen interaction categories such as <em>support-by-arm</em>. Even though this interaction pattern is not observed during training, the humanoid successfully follows the motion while placing a supportive hand on the partner's arm.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Contributions -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Key Contributions</h2>
+            <div class="contributions">
+                <div class="contribution-item">
+                    <div class="contribution-icon"><i class="fas fa-puzzle-piece"></i></div>
+                    <h3>Formulation</h3>
+                    <p>We cast physics-based human–human motion imitation as a multi-agent reinforcement learning (MARL) framework, enabling motion imitation for caregiving and assistive tasks that require reactive force exchange.</p>
+                </div>
+                <div class="contribution-item">
+                    <div class="contribution-icon"><i class="fas fa-cogs"></i></div>
+                    <h3>Methodology</h3>
+                    <p>We introduce motion prior initialization, dynamic reference retargeting, and contact-promoting reward schemes that make multi-agent RL tractable and effective in high-contact settings.</p>
+                </div>
+                <div class="contribution-item">
+                    <div class="contribution-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Evaluation</h3>
+                    <p>We conduct extensive experiments and ablations that quantify each component's contribution to learning efficiency, imitation fidelity, and assistive stability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BibTeX -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">BibTeX</h2>
+            <div class="bibtex-wrapper">
+                <button class="copy-btn" onclick="copyBibtex()"><i class="fas fa-copy"></i> Copy</button>
+                <pre class="bibtex"><code>@inproceedings{shibata2026assistmimic,
+    title={Learning to Assist: Physics-Grounded Human-Human Control
+           via Multi-Agent Reinforcement Learning},
+    author={Shibata, Yuto and Yamazaki, Kashu and Jayanti, Lalit
+            and Aoki, Yoshimitsu and Isogawa, Mariko
+            and Fragkiadaki, Katerina},
+    booktitle={Proceedings of the IEEE/CVF Conference on
+               Computer Vision and Pattern Recognition (CVPR)},
+    year={2026}
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Template inspired by <a href="https://nerfies.github.io/" target="_blank">Nerfies</a> and <a href="https://sirui-xu.github.io/InterMimic/" target="_blank">InterMimic</a>.</p>
+        </div>
+    </footer>
+
+    <script>
+        function copyBibtex() {
+            const bibtex = document.querySelector('.bibtex code').innerText;
+            navigator.clipboard.writeText(bibtex).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
